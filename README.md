@@ -7,4 +7,3 @@ In the cashier Page, the user will be provided with interfaces to sell items to 
 
 In the admin Page, the admin can get the transction report by day, cashier name or by payment type, also admin can print the report.
 
-In card, we put each card’s QR-code. We included this function because we believe that the card payment system is more convenient than the cash payment. Cashless made effortless.

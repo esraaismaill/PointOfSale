@@ -17,13 +17,11 @@ namespace UseCases
             this.transactionRepository = transactionRepository;
         }
 
-        public IEnumerable<Transaction> Execute(string cashierName)
+        public IEnumerable<Transaction> Execute(string cashierName, string visa, int recId)
         {
-            return transactionRepository.GetByDay(cashierName, DateTime.Now);
+            return transactionRepository.GetByDay(cashierName, DateTime.Now, visa, recId);
         }
-        public IEnumerable<Transaction> Execute(bool visa)
-        {
-            return transactionRepository.GetByDay(visa.ToString(), DateTime.Now);
-        }
+     
+
     }
 }

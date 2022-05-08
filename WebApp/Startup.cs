@@ -51,13 +51,20 @@ namespace WebApp
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
+            services.AddScoped<IReceiptsRepository, ReceiptsRepository>();
 
             //Dependency Injection for Use Cases and Repositories
             services.AddTransient<IViewCategoriesUseCase, ViewCategoriesUseCase>();
+            services.AddTransient<IGetCategoryByIdUseCase, GetCategoryByIdUseCase>();
             services.AddTransient<IAddCategoryUseCase, AddCategoryUseCase>();
             services.AddTransient<IEditCategoryUseCase, EditCategoryUseCase>();
-            services.AddTransient<IGetCategoryByIdUseCase, GetCategoryByIdUseCase>();
             services.AddTransient<IDeleteCategoryUseCase, DeleteCategoryUseCase>();
+            services.AddTransient<IViewTransactionUseCase, ViewTransactionUseCase>();
+            services.AddTransient<IAddTransactionUseCase, AddTransactionUseCase>();
+            services.AddTransient<IEditTransactionUseCase, EditTransactionUseCase>();
+            services.AddTransient<IDeleteTransactionUseCase, DeleteTransactionUseCase>();
+            services.AddTransient<IGetTransactionByIdUseCase, GetTransactionByIdUseCase>();
+            services.AddTransient<IViewTransactionByReceiptId, ViewTransactionByReceiptId>();
             services.AddTransient<IViewProductsUseCase, ViewProductsUseCase>();
             services.AddTransient<IAddProductUseCase, AddProductUseCase>();
             services.AddTransient<IEditProductUseCase, EditProductUseCase>();
@@ -68,6 +75,7 @@ namespace WebApp
             services.AddTransient<IRecordTransactionUseCase, RecordTransactionUseCase>();
             services.AddTransient<IGetTodayTransactionsUseCase, GetTodayTransactionsUseCase>();
             services.AddTransient<IGetTransactionsUseCase, GetTransactionsUseCase>();
+            services.AddTransient<IViewReceiptsUseCase, ViewReceiptsUseCase>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

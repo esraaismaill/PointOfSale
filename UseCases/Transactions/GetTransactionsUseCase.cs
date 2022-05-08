@@ -21,10 +21,11 @@ namespace UseCases
             string cashierName,
             DateTime startDate,
             DateTime endDate,
-            bool visa
+            string visa,
+            string receiptsId
             )
         {
-            return transactionRepository.Search(cashierName, startDate, endDate, visa);
+            return transactionRepository.Search(cashierName, startDate, endDate, visa, receiptsId);
         }
     }
 }

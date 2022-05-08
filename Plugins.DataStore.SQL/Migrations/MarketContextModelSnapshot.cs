@@ -81,45 +81,38 @@ namespace Plugins.DataStore.SQL.Migrations
                         .IsRequired()
                         .HasColumnType("int");
 
+                    b.Property<string>("Visa")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("ProductId");
 
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
+                });
 
-                    b.HasData(
-                        new
-                        {
-                            ProductId = 1,
-                            CategoryId = 1,
-                            Name = "Iced Tea",
-                            Price = 1.99,
-                            Quantity = 100
-                        },
-                        new
-                        {
-                            ProductId = 2,
-                            CategoryId = 1,
-                            Name = "Canada Dry",
-                            Price = 1.99,
-                            Quantity = 200
-                        },
-                        new
-                        {
-                            ProductId = 3,
-                            CategoryId = 2,
-                            Name = "Whole Wheat Bread",
-                            Price = 1.5,
-                            Quantity = 300
-                        },
-                        new
-                        {
-                            ProductId = 4,
-                            CategoryId = 2,
-                            Name = "White Bread",
-                            Price = 1.5,
-                            Quantity = 300
-                        });
+            modelBuilder.Entity("CoreBusiness.Receipts", b =>
+                {
+                    b.Property<int>("ReceiptsId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CashierName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("TimeStamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TransactionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Visa")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ReceiptsId");
+
+                    b.ToTable("Receipts");
                 });
 
             modelBuilder.Entity("CoreBusiness.Transaction", b =>
@@ -130,6 +123,9 @@ namespace Plugins.DataStore.SQL.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("BeforeQty")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CashierId")
                         .HasColumnType("int");
 
                     b.Property<string>("CashierName")
@@ -144,13 +140,25 @@ namespace Plugins.DataStore.SQL.Migrations
                     b.Property<string>("ProductName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("ReceiptsId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ReceiptsId2")
+                        .IsRequired()
+                        .HasColumnType("int");
+
                     b.Property<int>("SoldQty")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("TimeStamp")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Visa")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("TransactionId");
+
+                    b.HasIndex("ReceiptsId");
 
                     b.ToTable("Transactions");
                 });
@@ -166,9 +174,23 @@ namespace Plugins.DataStore.SQL.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("CoreBusiness.Transaction", b =>
+                {
+                    b.HasOne("CoreBusiness.Receipts", "Receipts")
+                        .WithMany("Transactions")
+                        .HasForeignKey("ReceiptsId");
+
+                    b.Navigation("Receipts");
+                });
+
             modelBuilder.Entity("CoreBusiness.Category", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("CoreBusiness.Receipts", b =>
+                {
+                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

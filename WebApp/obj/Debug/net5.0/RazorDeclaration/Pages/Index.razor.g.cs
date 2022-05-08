@@ -111,6 +111,35 @@ using UseCases;
         {
         }
         #pragma warning restore 1998
+#nullable restore
+#line 105 "C:\Users\esraa\OneDrive\Desktop\PointOfSale\WebApp\Pages\Index.razor"
+       
+    private string username;
+
+
+    [CascadingParameter]
+    private Task<AuthenticationState> _authState { get; set; }
+
+    private AuthenticationState authState;
+
+    protected override async Task OnInitializedAsync()
+    {
+        authState = await _authState;
+        username = authState.User.Identity.Name;
+        if (!string.IsNullOrWhiteSpace(username))
+        {
+            HideLabel = "hidden";
+        }
+        else { HideLabel = "visable"; }
+
+    }
+
+
+    private string HideLabel = "hidden";
+
+#line default
+#line hidden
+#nullable disable
     }
 }
 #pragma warning restore 1591

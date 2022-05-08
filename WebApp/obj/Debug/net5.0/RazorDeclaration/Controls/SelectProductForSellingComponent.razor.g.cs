@@ -111,7 +111,7 @@ using UseCases;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 74 "C:\Users\esraa\OneDrive\Desktop\PointOfSale\WebApp\Controls\SelectProductForSellingComponent.razor"
+#line 75 "C:\Users\esraa\OneDrive\Desktop\PointOfSale\WebApp\Controls\SelectProductForSellingComponent.razor"
        
 
     private IEnumerable<Product> productsInCategory;

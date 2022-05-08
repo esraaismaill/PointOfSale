@@ -82,7 +82,7 @@
                     Esraa's Supermarket
                 </h1>
 
-                <div class="hero_btn-continer">
+                <div style="visibility:@HideLabel" class="hero_btn-continer">
                     <a href="Identity/Account/Login" class="call_to-btn btn_white-border">
                         <span>
                             Login Here
@@ -102,4 +102,27 @@
 
 
 
+@code {
+    private string username;
 
+
+    [CascadingParameter]
+    private Task<AuthenticationState> _authState { get; set; }
+
+    private AuthenticationState authState;
+
+    protected override async Task OnInitializedAsync()
+    {
+        authState = await _authState;
+        username = authState.User.Identity.Name;
+        if (!string.IsNullOrWhiteSpace(username))
+        {
+            HideLabel = "hidden";
+        }
+        else { HideLabel = "visable"; }
+
+    }
+
+
+    private string HideLabel = "hidden";
+}

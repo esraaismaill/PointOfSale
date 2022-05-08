@@ -20,10 +20,10 @@ namespace UseCases
             this.getProductByIdUseCase = getProductByIdUseCase;
         }
 
-        public void Execute(string cashierName, int productId, int qty, bool visaa)
+        public void Execute(string cashierName, int productId, int qty, string visa, int receiptsId)
         {
             var product = getProductByIdUseCase.Execute(productId);
-            transactionRepository.Save(cashierName, productId, product.Name, product.Price.Value, product.Quantity.Value, qty, visaa);
+            transactionRepository.Save(cashierName, productId, product.Name, product.Price.Value, product.Quantity.Value, qty, visa, receiptsId);
         }
     }
 }

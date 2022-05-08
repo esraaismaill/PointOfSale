@@ -20,11 +20,11 @@ namespace UseCases
             this.recordTransactionUseCase = recordTransactionUseCase;
         }
 
-        public void Execute(string cashierName, int productId, int qtyToSell, bool visaa)
+        public void Execute(string cashierName, int productId, int qtyToSell, string visa, int receiptsId)
         {
            // var product = productRepository.GetProductById(productId);
          //  if (product == null) return; 
-            recordTransactionUseCase.Execute(cashierName, productId, qtyToSell,visaa);
+            recordTransactionUseCase.Execute(cashierName, productId, qtyToSell,visa, receiptsId);
          // product.Quantity -= qtyToSell;
          //   productRepository.UpdateProduct(product);            
         }

@@ -119,34 +119,35 @@ using UseCases;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 86 "C:\Users\esraa\OneDrive\Desktop\PointOfSale\WebApp\Pages\TransactionsReportComponent.razor"
-               
+#line 92 "C:\Users\esraa\OneDrive\Desktop\PointOfSale\WebApp\Pages\TransactionsReportComponent.razor"
+                                   
 
-            private string cashierName;
-            private DateTime startDate;
-            private DateTime endDate;
-            private bool visa;
-            private IEnumerable<Transaction> transactions;
+                                private string cashierName;
+                                private DateTime startDate;
+                                private DateTime endDate;
+                                private string visa;
+                                private string receiptsId;
+                                private IEnumerable<Transaction> transactions;
 
-            protected override void OnInitialized()
-            {
-                base.OnInitialized();
+                                protected override void OnInitialized()
+                                {
+                                    base.OnInitialized();
 
-                startDate = DateTime.Today;
-                endDate = DateTime.Today;
-            }
+                                    startDate = DateTime.Today;
+                                    endDate = DateTime.Today;
+                                }
 
-            private void LoadTransactions()
-            {
-                transactions = GetTransactionsUseCase.Execute(cashierName, startDate, endDate, visa);
-            }
+                                private void LoadTransactions()
+                                {
+                                    transactions = GetTransactionsUseCase.Execute(cashierName, startDate, endDate, visa, receiptsId);
+                                }
 
-            private void PrintReport()
-            {
-               
-                JSRuntime.InvokeVoidAsync("print");
-            }
-        
+                                private void PrintReport()
+                                {
+
+                                    JSRuntime.InvokeVoidAsync("Print");
+                                }
+                            
 
 #line default
 #line hidden

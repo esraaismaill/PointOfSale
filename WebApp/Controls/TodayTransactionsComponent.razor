@@ -1,50 +1,196 @@
 ﻿@inject IGetTodayTransactionsUseCase GetTodayTransactionsUseCase
+@inject NavigationManager NavigationManager
+@inject UseCases.IViewTransactionUseCase ViewTransactionUseCase
+@inject UseCases.IDeleteTransactionUseCase DeleteTransactionUseCase
+
+
+
+<head>
+
+    <style>
+        .invoice-box {
+            max-width: 800px;
+            margin: auto;
+            padding: 30px;
+            border: 1px solid #eee;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+            font-size: 16px;
+            line-height: 24px;
+            font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+            color: #555;
+        }
+
+            .invoice-box table {
+                width: 100%;
+                line-height: inherit;
+                text-align: left;
+            }
+
+                .invoice-box table td {
+                    padding: 5px;
+                    vertical-align: top;
+                }
+
+                .invoice-box table tr td:nth-child(2) {
+                    text-align: right;
+                    padding: 5px;
+                }
+
+                .invoice-box table tr.top table td {
+                    padding-bottom: 20px;
+                }
+
+                    .invoice-box table tr.top table td.title {
+                        font-size: 45px;
+                        line-height: 45px;
+                        color: #333;
+                    }
+
+                .invoice-box table tr.information table td {
+                    padding-bottom: 40px;
+                }
+
+                .invoice-box table tr.heading td {
+                    background: #eee;
+                    border-bottom: 1px solid #ddd;
+                    font-weight: bold;
+                }
+
+                .invoice-box table tr.details td {
+                    padding-bottom: 20px;
+                }
+
+                .invoice-box table tr.item td {
+                    border-bottom: 1px solid #eee;
+                }
+
+                .invoice-box table tr.item.last td {
+                    border-bottom: none;
+                }
+
+                .invoice-box table tr.total td:nth-child(2) {
+                    border-top: 2px solid #eee;
+                    font-weight: bold;
+                    padding: 5px;
+                }
+    </style>
+</head>
 
 @if (transactions != null)
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Cashier Name</th>
-                <th>Product Name</th>
-                <th>Date Time</th>
-                <th>Qty Before</th>
-                <th>Qty Sold</th>
-                <th>Qty After</th>
-                <th>Sold Amt</th>
-                <th>Visa</th>
+    <body>
+        <div class="invoice-box">
+            <table cellpadding="0" cellspacing="0">
+
+
+                <tr class="top">
+                    <td colspan="2">
+                        <table>
+                            <tr>
+                                <td class="title">
+                                    <img src="css/images/inv-logo.png" style="width: 100%; max-width: 300px" />
+                                </td>
+
+                                <td>
+                                    Invoice #: @recId<br />
+                                    Date: @date<br />
+                                    CashierName: @cashierName
+                                    CashierID: cashierId
+                                </td>
+
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr class="heading">
+                    <td>Payment Method</td>
+                </tr>
+
+                <tr class="details">
+                    <td>@Visa</td>
+                </tr>
+
+                <tr class="heading">
+                    <td>Item</td>
+                    <td>Price</td>
+                    <td>Quantity</td>
+                    <td>Sold Amt</td>
+                    <td>      </td>
+                </tr>
+                @foreach (var tran in transactions)
+                {
+                    if (tran.ReceiptsId2 == recId)
+                    {
+                        cashierName = tran.CashierName;
+                        date = tran.TimeStamp.ToString("yyyy-MM-dd hh:mm");
+
+                        <tr class="item">
+                            <td>@tran.ProductName</td>
+                            <td>@(string.Format("{0:c}", tran.Price))</td>
+                            <td>@tran.SoldQty</td>
+                            <td>@(string.Format("{0:c}", tran.SoldQty * tran.Price))</td>
+                            <td>
+                                <button type="button" @onclick="@(() => DeleteTransaction(tran.TransactionId))" class="btn btn-link">Delete</button>
+                            </td>
+                        </tr>
+                    }
+                }
+            <tr class="total">
+                <td>Total:@(string.Format("{0:c}", (transactions.Where(x => x.ReceiptsId2==recId )).Sum(x => x.Price * x.SoldQty)))</td>
+                <!-- transactions.Where(x => (EF.Functions.Like(x.ReceiptsId., $"%{visa}%");
+     transactions.Sum(x => x.Price * x.SoldQty)-->
             </tr>
-        </thead>
-        <tbody>
-            @foreach(var tran in transactions)
-            {
-            <tr>
-                <td>@tran.CashierName</td>
-                <td>@tran.ProductName</td>
-                <td>@tran.TimeStamp.ToString("MM/dd hh:mm")</td>
-                <td>@tran.BeforeQty</td>
-                <td>@tran.SoldQty</td>
-                <td>@(tran.BeforeQty - tran.SoldQty)</td>
-                <td>@(string.Format("{0:c}", tran.SoldQty * tran.Price))</td>
-                <td>@tran.Visa</td>
-            </tr>
-            }
-        </tbody>
-    </table>
+            </table>
+
+        </div>
+    </body>
+
 }
+
 
 @code {
     private IEnumerable<Transaction> transactions;
+    private string cashierName;
+    private int recId;
+    private string date;
+    private string Visa;
 
-    public void LoadTransactions(string cashierName)
+    /*private bool visaa;
+    [Parameter]
+    public string Visa { get; set; }
+
+    private void select()
     {
-        transactions = GetTodayTransactionsUseCase.Execute(cashierName);
+        if (String.Equals(visaa.ToString(), "True"))
+            Visa = "Cash";
+        if (String.Equals(visaa.ToString(), "False"))
+            Visa = "Visa";
+    }*/
+
+
+    public void LoadTransactions(string cashierName, string visa, int recId)
+    {
+        transactions = GetTodayTransactionsUseCase.Execute(cashierName, visa, recId);
+        this.cashierName = cashierName;
+        this.Visa = visa;
+        this.recId = recId;
         StateHasChanged();
     }
-       public void LoadTransactions(bool visa)
+
+
+
+
+    private void DeleteTransaction(int transactionId)
     {
-        transactions = GetTodayTransactionsUseCase.Execute(visa.ToString());
-        StateHasChanged();
+        DeleteTransactionUseCase.Delete(transactionId);
+        LoadTransactions(cashierName, Visa, recId);
     }
+
+
+
+    /*  private void LoadTransactions()
+      {
+          transactions = ViewTransactionUseCase.Execute()?.ToList();
+      }*/
 
 }

@@ -3,16 +3,24 @@
 
 @inject IJSRuntime JSRuntime
 @inject IGetTransactionsUseCase GetTransactionsUseCase
+
+
+
+
     <div class="content px-4">
         <div id="printarea">
             <div class="row hideWhenPrint">
-                <div class="col-3">
+                <div class="col-2">
                     <label for="cashier">Cashier Name</label>
                     <input type="text" id="cashier" class="form-control" @bind-value="cashierName" />
                 </div>
-                <div class="col-3">
+                <div class="col-2">
                     <label for="cashier">Payment Method</label>
                     <input type="text" id="cashier" class="form-control" @bind-value="visa" />
+                </div>
+                <div class="col-2">
+                    <label for="cashier">Receipt ID</label>
+                    <input type="text" id="cashier" class="form-control" @bind-value="receiptsId" />
                 </div>
                 <div class="col-3">
                     <label for="startdate">Start Date</label>
@@ -21,7 +29,7 @@
                 <div class="col-3">
                     <label for="enddate">End Date</label>
                     <input type="date" id="enddate" class="form-control" @bind-value="endDate" />
-                </div> 
+                </div>
                 <br />
                 <div class="col-2">
                     <label>&nbsp;</label>
@@ -40,11 +48,9 @@
                         <tr>
                             <th>Date Time</th>
                             <th>Cashier Name</th>
+                            <th>Receipt ID</th>
                             <th>Product Name</th>
-                            <th>Qty Before</th>
                             <th>Qty Sold</th>
-                            <th>Qty After</th>
-                            <th>Visa</th>
                             <th>Price</th>
                             <th>Sold Amt</th>
                         </tr>
@@ -52,17 +58,15 @@
                     <tbody>
                         @foreach (var tran in transactions)
                         {
-                        <tr>
-                            <td>@tran.TimeStamp.ToString("yyyy-MM-dd hh:mm")</td>
-                            <td>@tran.CashierName</td>
-                            <td>@tran.ProductName</td>
-                            <td>@tran.BeforeQty</td>
-                            <td>@tran.SoldQty</td>
-                            <td>@(tran.BeforeQty - tran.SoldQty)</td>
-                            <td>@tran.Visa</td>
-                            <td style="text-align:right">@(string.Format("{0:c}", tran.Price))</td>
-                            <td style="text-align:right">@(string.Format("{0:c}", tran.SoldQty * tran.Price))</td>
-                        </tr>
+                            <tr>
+                                <td>@tran.TimeStamp.ToString("yyyy-MM-dd hh:mm")</td>
+                                <td>@tran.CashierName</td>
+                                <td>@tran.ReceiptsId2</td>
+                                <td>@tran.ProductName</td>
+                                <td>@tran.SoldQty</td>
+                                <td style="text-align:left">@(string.Format("{0:c}", tran.Price))</td>
+                                <td style="text-align:left">@(string.Format("{0:c}", tran.SoldQty * tran.Price))</td>
+                            </tr>
                         }
                     </tbody>
                     <tfoot>
@@ -73,40 +77,43 @@
                             </td>
                             <td style="text-align:right">
                                 <b>
-                                    @(string.Format("{0:c}", transactions.Sum(x => x.Price * x.SoldQty)))
+                                    <!-- @(string.Format("{0:c}", (transactions.Where(x => x.ReceiptsId.ToString()== receiptsId)).Sum(x => x.Price * x.SoldQty)))-->
+                                
                                 </b>
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
-            }
+                                                </td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
 
-        </div>
-        </div>
-        @code {
+                                }
 
-            private string cashierName;
-            private DateTime startDate;
-            private DateTime endDate;
-            private bool visa;
-            private IEnumerable<Transaction> transactions;
+                            </div>
+                            </div>
+                            @code {
 
-            protected override void OnInitialized()
-            {
-                base.OnInitialized();
+                                private string cashierName;
+                                private DateTime startDate;
+                                private DateTime endDate;
+                                private string visa;
+                                private string receiptsId;
+                                private IEnumerable<Transaction> transactions;
 
-                startDate = DateTime.Today;
-                endDate = DateTime.Today;
-            }
+                                protected override void OnInitialized()
+                                {
+                                    base.OnInitialized();
 
-            private void LoadTransactions()
-            {
-                transactions = GetTransactionsUseCase.Execute(cashierName, startDate, endDate, visa);
-            }
+                                    startDate = DateTime.Today;
+                                    endDate = DateTime.Today;
+                                }
 
-            private void PrintReport()
-            {
-               
-                JSRuntime.InvokeVoidAsync("print");
-            }
-        }
+                                private void LoadTransactions()
+                                {
+                                    transactions = GetTransactionsUseCase.Execute(cashierName, startDate, endDate, visa, receiptsId);
+                                }
+
+                                private void PrintReport()
+                                {
+
+                                    JSRuntime.InvokeVoidAsync("Print");
+                                }
+                            }

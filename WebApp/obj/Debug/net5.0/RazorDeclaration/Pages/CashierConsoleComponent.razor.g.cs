@@ -119,12 +119,29 @@ using UseCases;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 33 "C:\Users\esraa\OneDrive\Desktop\PointOfSale\WebApp\Pages\CashierConsoleComponent.razor"
-           
-private TodayTransactionsComponent transactionComponent;
+#line 48 "C:\Users\esraa\OneDrive\Desktop\PointOfSale\WebApp\Pages\CashierConsoleComponent.razor"
+       
+    private TodayTransactionsComponent transactionComponent;
 
     private Product selectedProduct;
     private string cashierName;
+
+
+    private bool visaa;
+    private string Visa;
+
+
+    private void select()
+    {
+        if (String.Equals(visaa.ToString(), "True"))
+            Visa = "Cash";
+        if (String.Equals(visaa.ToString(), "False"))
+            Visa = "Visa";
+    }
+
+
+
+    private int recID;
 
     [CascadingParameter]
     private Task<AuthenticationState> _authState { get; set; }
@@ -143,7 +160,7 @@ private TodayTransactionsComponent transactionComponent;
 
         if (firstRender)
         {
-            transactionComponent.LoadTransactions(cashierName);
+            transactionComponent.LoadTransactions(cashierName, Visa, recID);
         }
     }
 
@@ -154,14 +171,25 @@ private TodayTransactionsComponent transactionComponent;
 
     private void SellProduct(Product product)
     {
-        transactionComponent.LoadTransactions(cashierName);
+        transactionComponent.LoadTransactions(cashierName, Visa, recID);
     }
 
-    
+    private void send()
+    {
+        recID += 1;
+    }
+
+    private void PrintReport()
+    {
+
+        JSRuntime.InvokeVoidAsync("Print");
+    }
+
 
 #line default
 #line hidden
 #nullable disable
+        [global::Microsoft.AspNetCore.Components.InjectAttribute] private IJSRuntime JSRuntime { get; set; }
     }
 }
 #pragma warning restore 1591

@@ -1,40 +1,72 @@
 ﻿@page "/cashier_console"
 @attribute [Authorize(Policy = "CashierOnly")]
+@inject IJSRuntime JSRuntime
 
 @if (!string.IsNullOrWhiteSpace(cashierName))
-{<div class="content px-4">
-    <div class="row">
-        <div class="col-7 hero_detail-box"><h3>Cashier's Console</h3></div>
-        <div class="col-2"><label for="cashier">Cashier Name:</label></div>
-        <div class="col-3">
-            <div class="form-group">
-                <input type="text" id="cashier" class="form-control" @bind-value="cashierName" />
+{
+    <div class="content px-4">
+        <div class="row">
+            <div class="col-7 hero_detail-box"><h3>Cashier's Console</h3></div>
+            <div class="col-2"><label for="cashier">Cashier Name:</label></div>
+            <div class="col-3">
+                <div class="form-group">
+                    <input type="text" id="cashier" class="form-control" @bind-value="cashierName" />
+                </div>
+            </div>
+        </div>
+
+        <br />
+        <div class="row">
+            <div class="col-4 ">
+                <SelectProductForSellingComponent OnProductSelected="SelectProduct"></SelectProductForSellingComponent>
+                <br />
+                <SellProductComponent CashierName="@cashierName"
+                                      SelectedProduct="selectedProduct"
+                                      Visa="@Visa"
+                                      RecID="recID"
+                                      OnProductSold="SellProduct"></SellProductComponent>
+            </div>
+            <div class="col">
+                <br />
+                <TodayTransactionsComponent @ref="transactionComponent"></TodayTransactionsComponent>
+                <br />
+                <label class="lab  ">Visa</label>
+                <div class="roundedOne ">
+                    <button type="submit" class="call_to-btn btn_white-border btn" @onclick="@send">Sell</button>
+                    <input type="checkbox" id="roundedOne" @bind-value="@visaa" @onclick="@select" name="check" />
+                    <label for="roundedOne"></label>
+                </div>
+                <br />
+                    <button type="button" class="call_to-btn btn_white-border btn " @onclick="PrintReport">Print</button>
             </div>
         </div>
     </div>
 
-    <br />
-    <div class="row">
-        <div class="col-4">
-            <SelectProductForSellingComponent OnProductSelected="SelectProduct"></SelectProductForSellingComponent>
-            <br />
-            <SellProductComponent CashierName="@cashierName"
-                                  SelectedProduct="selectedProduct"
-                                  OnProductSold="SellProduct"></SellProductComponent>
-        </div>
-        <div class="col">
-            <br />
-            <TodayTransactionsComponent @ref="transactionComponent"></TodayTransactionsComponent>
-        </div>
-    </div>
-    </div>
-    }
+   
+}
 
-    @code {
-private TodayTransactionsComponent transactionComponent;
+@code {
+    private TodayTransactionsComponent transactionComponent;
 
     private Product selectedProduct;
     private string cashierName;
+
+
+    private bool visaa;
+    private string Visa;
+
+
+    private void select()
+    {
+        if (String.Equals(visaa.ToString(), "True"))
+            Visa = "Cash";
+        if (String.Equals(visaa.ToString(), "False"))
+            Visa = "Visa";
+    }
+
+
+
+    private int recID;
 
     [CascadingParameter]
     private Task<AuthenticationState> _authState { get; set; }
@@ -53,7 +85,7 @@ private TodayTransactionsComponent transactionComponent;
 
         if (firstRender)
         {
-            transactionComponent.LoadTransactions(cashierName);
+            transactionComponent.LoadTransactions(cashierName, Visa, recID);
         }
     }
 
@@ -64,7 +96,18 @@ private TodayTransactionsComponent transactionComponent;
 
     private void SellProduct(Product product)
     {
-        transactionComponent.LoadTransactions(cashierName);
+        transactionComponent.LoadTransactions(cashierName, Visa, recID);
     }
 
+    private void send()
+    {
+        recID += 1;
     }
+
+    private void PrintReport()
+    {
+
+        JSRuntime.InvokeVoidAsync("Print");
+    }
+
+}

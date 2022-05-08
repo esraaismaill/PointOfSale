@@ -33,7 +33,8 @@ namespace Plugins.DataStore.SQL.Migrations
                     Price = table.Column<double>(type: "float", nullable: false),
                     BeforeQty = table.Column<int>(type: "int", nullable: false),
                     SoldQty = table.Column<int>(type: "int", nullable: false),
-                    CashierName = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    CashierName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ReceiptsId = table.Column<int>(type: "int", nullable: true),
                 },
                 constraints: table =>
                 {

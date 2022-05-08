@@ -111,13 +111,26 @@ using UseCases;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 38 "C:\Users\esraa\OneDrive\Desktop\PointOfSale\WebApp\Controls\SellProductComponent.razor"
+#line 37 "C:\Users\esraa\OneDrive\Desktop\PointOfSale\WebApp\Controls\SellProductComponent.razor"
        
     private Product productToSell;
     private string errorMessage;
-    private bool visaa;
+
+    //private bool visaa;
+
+    private Transaction transaction;
+    private IEnumerable<Receipts> receipts;
+
+    [Parameter]
+    public string Visa { get; set; }
 
 
+
+    [Parameter]
+    public int RecID { get; set; }
+
+    [Parameter]
+    public int cashierId { get; set; } 
 
     [Parameter]
     public string CashierName { get; set; }
@@ -140,7 +153,7 @@ using UseCases;
                 Name = SelectedProduct.Name,
                 CategoryId = SelectedProduct.CategoryId,
                 Price = SelectedProduct.Price,
-                Quantity = 0
+                Quantity = 1
             };
         }
         else
@@ -148,6 +161,7 @@ using UseCases;
             productToSell = null;
         }
     }
+
 
     private void SellProduct()
     {
@@ -157,7 +171,14 @@ using UseCases;
             return;
         }
 
-        var product = GetProductByIdUseCase.Execute(productToSell.ProductId);
+        if (CashierName == "esraaCashier@test.com")
+            cashierId = 1;
+        if (CashierName == "esraaCashier2@test.com")
+            cashierId = 2;
+        
+    // Visa = "Cash";
+    var product = GetProductByIdUseCase.Execute(productToSell.ProductId);
+
         if (productToSell.Quantity <= 0)
         {
             errorMessage = "The quanity has to be greater than zero.";
@@ -166,14 +187,14 @@ using UseCases;
         {
             OnProductSold.InvokeAsync(productToSell);
             errorMessage = string.Empty;
-            SellProductUseCase.Execute(CashierName, productToSell.ProductId, productToSell.Quantity.Value, visaa);
+            SellProductUseCase.Execute(CashierName, productToSell.ProductId, productToSell.Quantity.Value, Visa, RecID);
         }
         else if (product.Quantity < productToSell.Quantity)
         {
             product.Quantity = productToSell.Quantity;
             OnProductSold.InvokeAsync(productToSell);
             errorMessage = string.Empty;
-            SellProductUseCase.Execute(CashierName, productToSell.ProductId, productToSell.Quantity.Value, visaa);
+            SellProductUseCase.Execute(CashierName, productToSell.ProductId, productToSell.Quantity.Value, Visa, RecID);
         }
         else
         {

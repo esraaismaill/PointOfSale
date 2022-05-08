@@ -111,25 +111,59 @@ using UseCases;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 36 "C:\Users\esraa\OneDrive\Desktop\PointOfSale\WebApp\Controls\TodayTransactionsComponent.razor"
+#line 151 "C:\Users\esraa\OneDrive\Desktop\PointOfSale\WebApp\Controls\TodayTransactionsComponent.razor"
        
     private IEnumerable<Transaction> transactions;
+    private string cashierName;
+    private int recId;
+    private string date;
+    private string Visa;
 
-    public void LoadTransactions(string cashierName)
+    /*private bool visaa;
+    [Parameter]
+    public string Visa { get; set; }
+
+    private void select()
     {
-        transactions = GetTodayTransactionsUseCase.Execute(cashierName);
+        if (String.Equals(visaa.ToString(), "True"))
+            Visa = "Cash";
+        if (String.Equals(visaa.ToString(), "False"))
+            Visa = "Visa";
+    }*/
+
+
+    public void LoadTransactions(string cashierName, string visa, int recId)
+    {
+        transactions = GetTodayTransactionsUseCase.Execute(cashierName, visa, recId);
+        this.cashierName = cashierName;
+        this.Visa = visa;
+        this.recId = recId;
         StateHasChanged();
     }
-       public void LoadTransactions(bool visa)
+
+
+
+
+    private void DeleteTransaction(int transactionId)
     {
-        transactions = GetTodayTransactionsUseCase.Execute(visa.ToString());
-        StateHasChanged();
+        DeleteTransactionUseCase.Delete(transactionId);
+        LoadTransactions(cashierName, Visa, recId);
     }
+
+
+
+    /*  private void LoadTransactions()
+      {
+          transactions = ViewTransactionUseCase.Execute()?.ToList();
+      }*/
 
 
 #line default
 #line hidden
 #nullable disable
+        [global::Microsoft.AspNetCore.Components.InjectAttribute] private UseCases.IDeleteTransactionUseCase DeleteTransactionUseCase { get; set; }
+        [global::Microsoft.AspNetCore.Components.InjectAttribute] private UseCases.IViewTransactionUseCase ViewTransactionUseCase { get; set; }
+        [global::Microsoft.AspNetCore.Components.InjectAttribute] private NavigationManager NavigationManager { get; set; }
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private IGetTodayTransactionsUseCase GetTodayTransactionsUseCase { get; set; }
     }
 }
